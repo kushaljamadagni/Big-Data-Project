@@ -13,7 +13,8 @@ Running the files:
 -> To run the streamer file use: python3 streamer.py or /opt/spark/bin/spark-submit streamer.py
 
 Models:
-the models we have used are 
+  the models we have used are 
+
 1)SGDclassifier
 2)Logistic Regression 
 3)Random Forest classifier
