@@ -61,3 +61,35 @@ def logreg(df):
  print('Precision score: {}'.format(precision_score(testfory,y_pred)))#print the precission score
  print('Recall score: {}'.format(recall_score(testfory,y_pred)))#print the recall score 
  print('F1 score: {}'.format(f1_score(testfory,y_pred)))#print the f1 score.
+def sgdclass(df):  # model for stochastic gradient descent 
+ data=np.array(df.select("features").collect())
+ labeled=np.array(df.select("label").collect())
+ nosamp,nox,noy=data.shape
+ data = data.reshape((nosamp,nox*noy))    #reshaping the rdd 
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.4,random_state=42)
+
+ clf = make_pipeline(StandardScaler(),SGDClassifier(max_iter=1000,tol=1e-4)) #making the pipeline for the model  and calling sgd classifier 
+ clf.fit(trainforx,trainfory)  # fitting the training data 
+ y_pred=clf.predict(testforx)  # predicting the scores 
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))
+ #print('Precision score: {}'.format(precision_score(testfory,y_pred)))
+ #print('Recall score: {}'.format(recall_score(testfory,y_pred)))
+ #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
+ metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)] #making a list consisting of evaluation metrics 
+ print(metrics) #printing the same list for better understanding instead of printing four different lines 
+#model for random forest
+def randomfor(df):
+ data=np.array(df.select("features").collect())    # parameters were features and labels 
+ labeled=np.array(df.select("label").collect())     #  label was spam and ham   
+ nosamp,nox,noy=data.shape
+ data=data.reshape((nosamp,nox*noy))            # reshaping 
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.33, random_state=42)
+ clf=RandomForestClassifier(n_estimators=100)    # calling the random forest classifier  
+ clf.fit(trainforx,trainfory)    # fitting the trianing data 
+ y_pred=clf.predict(testforx)   # predicting using random classifier 
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))
+ #print('Precision score: {}'.format(precision_score(testfory,y_pred)))
+ #print('Recall score: {}'.format(recall_score(testfory,y_pred)))
+ #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
+ metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]
+ print(metrics)
