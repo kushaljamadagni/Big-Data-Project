@@ -86,19 +86,19 @@ def sgdclass(df):
  print(metrics)
 #model for random forest
 def randomfor(df):
- data=np.array(df.select("features").collect())
+ data=np.array(df.select("features").collect())    # there were two 
  labeled=np.array(df.select("label").collect())
  nosamp,nox,noy=data.shape
  data=data.reshape((nosamp,nox*noy))
  trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.33, random_state=42)
- clf=RandomForestClassifier(n_estimators=100)
- clf.partial_fit(trainforx,trainfory)
- y_pred=clf.predict(testforx)
+ clf=RandomForestClassifier(n_estimators=100) #100 decision trees 
+ clf.partial_fit(trainforx,trainfory)   #partially fittinng the data  
+ y_pred=clf.predict(testforx)     # predicting the output for test data 
  #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))
  #print('Precision score: {}'.format(precision_score(testfory,y_pred)))
  #print('Recall score: {}'.format(recall_score(testfory,y_pred)))
  #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
- metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]
+ metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]  # printing all the metrics in single list for ease in taking inputs for plots and to maintain uniformity
  print(metrics)
 	
 def RDDtoDf(time,rdd): #function to convert the rdd which was streamed into a dataframe
@@ -118,4 +118,37 @@ sparkstreamc.start()
 sparkstreamc.awaitTermination()
 sparkstreamc.stop()  
   
+
+def clusterin(df):
+ #Extracting the x variables i.e the features
+ data=np.array(df.select("features").collect())
+ #The Y variables or the target variables
+ labeled=np.array(df.select("label").collect())
+ nosamp,nox,noy=data.shape
+ data=data.reshape((nosamp,nox*noy))
+ #Splitting the data into training set for x and y and testing set for x and y
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.4,random_state=42)
+ clustering_algo = MiniBatchKMeans(n_clusters=2, random_state=12)
+ #Epoch is the number of iterations for the centroid calculations
+ epochs = 35
+
+ for k in range(epochs):
+  
+  X_batch, Y_batch = trainforx, trainfory
+  clustering_algo.partial_fit(X_batch, Y_batch)
+ predY_train = []
+ 
+ predY = clustering_algo.predict(testforx)
+ predY_train.extend(predY.tolist())
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,predY_train)))
+ #print('Precision score: {}'.format(precision_score(testfory,predY_train)))
+ #print('Recall score: {}'.format(recall_score(testfory,predY_train)))
+ #print('F1 score: {}'.format(f1_score(testfory,predY_train)))
+ #cluster_centers = clustering_algo_predict.cluster_centers_
+ 
+ #print(clustering_algo.cluster_centers_)
+ #print(predY_train)
+ metrics=[accuracy_score(testfory,predY_train),precision_score(testfory,predY_train),recall_score(testfory,predY_train),f1_score(testfory,predY_train)] 
+ print(metrics)
+
 	
