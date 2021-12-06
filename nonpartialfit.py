@@ -82,6 +82,7 @@ def sgdclass(df):  # model for stochastic gradient descent
  metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)] #making a list consisting of evaluation metrics 
  print(metrics) #printing the same list for better understanding instead of printing four different lines 
 #model for random forest
+
 def randomfor(df):
  data=np.array(df.select("features").collect())    # parameters were features and labels 
  labeled=np.array(df.select("label").collect())     #  label was spam and ham   
