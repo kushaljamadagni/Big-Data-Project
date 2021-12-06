@@ -65,6 +65,42 @@ def logreg(df):
  #print('F1 score: {}'.format(f1_score(testfory,y_pred)))#print the f1 score.
  metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)] #making a list consisting of evaluation metrics 
  print(metrics) #printing the same list for better understanding instead of printing four different lines 
+
+	
+def sgdclass(df):
+ data=np.array(df.select("features").collect())
+ labeled=np.array(df.select("label").collect())
+ nosamp,nox,noy=data.shape
+ data = data.reshape((nosamp,nox*noy))
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.4,random_state=42)
+ #clf=RandomForestClassifier(n_estimators=100)
+ #clf.fit(X_train,y_train)
+ #y_pred=clf.predict(X_test)
+ clf = make_pipeline(StandardScaler(),SGDClassifier(max_iter=1000,tol=1e-4))
+ clf.partial_fit(trainforx,trainfory)
+ y_pred=clf.predict(testforx)
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))
+ #print('Precision score: {}'.format(precision_score(testfory,y_pred)))
+ #print('Recall score: {}'.format(recall_score(testfory,y_pred)))
+ #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
+ metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]
+ print(metrics)
+#model for random forest
+def randomfor(df):
+ data=np.array(df.select("features").collect())
+ labeled=np.array(df.select("label").collect())
+ nosamp,nox,noy=data.shape
+ data=data.reshape((nosamp,nox*noy))
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.33, random_state=42)
+ clf=RandomForestClassifier(n_estimators=100)
+ clf.partial_fit(trainforx,trainfory)
+ y_pred=clf.predict(testforx)
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))
+ #print('Precision score: {}'.format(precision_score(testfory,y_pred)))
+ #print('Recall score: {}'.format(recall_score(testfory,y_pred)))
+ #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
+ metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]
+ print(metrics)
   
   
 	
