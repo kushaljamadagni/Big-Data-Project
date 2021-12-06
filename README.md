@@ -10,3 +10,4 @@ the models we have used are
 1)SGDclassifier
 2)Logisticregression 
 3)randomforest 
+4)kmeansclustering
