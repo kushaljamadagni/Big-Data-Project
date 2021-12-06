@@ -48,6 +48,7 @@ def cleaning(df):
 	#logreg(final_df_cleaned)#call to the logisitic regression model
 	sgdclass(final_df_cleaned)#call to the  standardgradientdescent model
 #models
+#logistic regression model
 def logreg(df):
  data=np.array(df.select("features").collect())#this selects the features column from the dataframe 
  labeled=np.array(df.select("label").collect())#this selects the labels from the dataframe
@@ -57,16 +58,19 @@ def logreg(df):
  logreg = LogisticRegression()#call the logistic regression function
  logreg.fit(trainforx,trainfory)#fit the x and y parameters of training using the logistic regression we got
  y_pred=logreg.predict(testforx)#predict the y component from the test data
- print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))#print the accuracy score
- print('Precision score: {}'.format(precision_score(testfory,y_pred)))#print the precission score
- print('Recall score: {}'.format(recall_score(testfory,y_pred)))#print the recall score 
- print('F1 score: {}'.format(f1_score(testfory,y_pred)))#print the f1 score.
+ #print('Accuracy score: {}'.format(accuracy_score(testfory,y_pred)))#print the accuracy score
+ #print('Precision score: {}'.format(precision_score(testfory,y_pred)))#print the precission score
+ #print('Recall score: {}'.format(recall_score(testfory,y_pred)))#print the recall score 
+ #print('F1 score: {}'.format(f1_score(testfory,y_pred)))#print the f1 score.
+metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)] #making a list consisting of evaluation metrics 
+ print(metrics) #printing the same list for better understanding instead of printing four different lines 
+	
 def sgdclass(df):  # model for stochastic gradient descent 
  data=np.array(df.select("features").collect())
  labeled=np.array(df.select("label").collect())
  nosamp,nox,noy=data.shape
  data = data.reshape((nosamp,nox*noy))    #reshaping the rdd 
- trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.4,random_state=42)
+ trainforx,testforx,trainfory,testfory=train_test_split(data,labeled,test_size=0.4,random_state=42)#split the train and test data
 
  clf = make_pipeline(StandardScaler(),SGDClassifier(max_iter=1000,tol=1e-4)) #making the pipeline for the model  and calling sgd classifier 
  clf.fit(trainforx,trainfory)  # fitting the training data 
@@ -77,9 +81,6 @@ def sgdclass(df):  # model for stochastic gradient descent
  #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
  metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)] #making a list consisting of evaluation metrics 
  print(metrics) #printing the same list for better understanding instead of printing four different lines 
- 
-
-
 #model for random forest
 def randomfor(df):
  data=np.array(df.select("features").collect())    # parameters were features and labels 
