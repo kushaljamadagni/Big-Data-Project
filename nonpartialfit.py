@@ -97,3 +97,20 @@ def randomfor(df):
  #print('F1 score: {}'.format(f1_score(testfory,y_pred)))
  metrics=[accuracy_score(testfory,y_pred),precision_score(testfory,y_pred),recall_score(testfory,y_pred),f1_score(testfory,y_pred)]
  print(metrics)
+
+def RDDtoDf(time,rdd): #function to convert the rdd which was streamed into a dataframe
+    print(f"========= {str(time)} =========") #this will give us the time at which the batch file has been delivered to spark
+    try:
+        if(rdd==[] or rdd is None or rdd==[[]]):#checks if rdd is empty or not
+            return 
+        rdd=rdd.flatMap(lambda x:rdd_to_json(x))#flatmaps the rdd and calls the rdd_to_json function to convert to json
+        df=spark_context.createDataFrame(rdd,["feature0","feature1","feature2"]) #creates a dataframe from the rdd which is flatmapped
+        cleaning(df)#calls the cleaning function to preprocess and clean data
+    except:
+        print("No Data") #if no data has been read the exception will be called
+
+rdd= sparkstreamc.socketTextStream("localhost", 6100) # creates an input from TCP source hostname and port. Data recieved is UTF-8 encoded
+rdd.foreachRDD(RDDtoDf) #calls the function for each RDD in Dstream 
+sparkstreamc.start()
+sparkstreamc.awaitTermination()
+sparkstreamc.stop()  
