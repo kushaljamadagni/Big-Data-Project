@@ -9,6 +9,7 @@ Team members :
 
 
 Running the files:
+
 -> To run the streaming file use:python3 stream.py -f spam -b 100
 
 -> To run the streamer file use: python3 streamer.py or /opt/spark/bin/spark-submit streamer.py
